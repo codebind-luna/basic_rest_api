@@ -1,7 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app import config
-from app.model import Base
+from models import Base
 
 class DbConn():
     def __init__(self, uri):
@@ -11,7 +10,9 @@ class DbConn():
         self.engine = create_engine(self.uri)
 
     def init_session(self):
-        session = sessionmaker()
-        session.configure(bind=self.engine)
+        Session = sessionmaker()
+        Session.configure(bind=self.engine)
+        session = Session()
+        session._model_changes = {}
         Base.metadata.create_all(self.engine)
-        self.session = session
+        self.db_session = session
